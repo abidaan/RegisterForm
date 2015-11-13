@@ -37,5 +37,5 @@ We have implemented a simple extended analysis (main.js, scripts/extendedAnalysi
 In our base analysis, we used ESLint which as per the configuration file reports errors, ad if any errors exist, the build fails. Like when the eslintrc file could not recognize Mocha keywords, it threw errors and the build failed. By making changes to the '.eslintrc' file as desired, builds can be accepted successfully. Therefore, we can configure ESLint to cause the build to fail if certain conditions are not satisfied.
 
 ####Screencast: Base Analysis, Extended Analysis and Analysis Gate
-[![Analysis](http://img.youtube.com/vi/MMOrcloQWig/0.jpg)](https://www.youtube.com/watch?v=MMOrcloQWig)
+[![Analysis](http://img.youtube.com/vi/MMOrcloQWig/0.jpg)](https://www.youtube.com/watch?v=MMOrcloQWig) 
 

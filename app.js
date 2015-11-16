@@ -4,20 +4,12 @@
 var bodyParser = require('body-parser');
 var express = require('express');
 var app = express();
-var mongoose = require('mongoose');
-var Schema = mongoose.Schema;
-var ObjectId = Schema.ObjectId;
 var error = '';
-//mongoose.connect(process.env.MONGOLAB_URI || 'mongodb://localhost/registerForm');
-var User = mongoose.model('User', new Schema({
-    id: ObjectId,
-    firstName: String,
-    lastName: String,
-    email: {type: String, unique: true},
-    password: String,
-    confirmPassword: String,
-    age: Number
-}));
+var flipit = require('flipit');
+flipit.load('testConfigurationFile.json');
+
+var dotenv = require('dotenv');
+dotenv.load();
 
 app.engine('html', require('ejs').renderFile);
 //Middleware
@@ -28,6 +20,8 @@ app.use(bodyParser.urlencoded({extended: true}));
 app.get('/',function(req, res){
     res.render('register.jade');
 });
+
+var emailFeatureFlag = 1;
 
 function checkStringLength(a){
     if (a.length == 0){
@@ -68,14 +62,14 @@ function validatePassword(password1, password2){
 }
 
 app.post('/register',function(req, res){
-    var user = new User({
+    var user = {
         firstName: req.body.firstname,
         lastName: req.body.lastname,
         email: req.body.email,
         password: req.body.password,
         age: req.body.age,
         confirmPassword: req.body.cpassword
-    });
+    };
 
     validateString(user.firstName);
     validateString(user.lastName);
@@ -88,10 +82,28 @@ app.post('/register',function(req, res){
     }
     else
     {
+
+    if(flipit.isEnabled('emailFeature')){
+        var sendgrid = require("sendgrid")(process.env.SENDGRID_USERNAME, process.env.SENDGRID_PASSWORD);
+        var email = new sendgrid.Email();
+        var sendemail = user.email;
+        email.addTo(sendemail);
+        email.setFrom("savidhal@ncsu.edu");
+        email.setSubject("RegisterForm Signup Success");
+        var text = "Thank you for signing up on RegisterForm,"+user.firstName+". We are glad to have you on-board"
+        console.log(text);
+        email.setHtml(text);
+
+        sendgrid.send(email);
+        console.log("email sent");
+        console.log("Added user");
+
+    }
+
         res.render("successRegister.jade");
     }
 });
-//app.listen(process.env.PORT || 3000);
+app.listen(process.env.PORT || 3000);
 exports.checkStringLength = checkStringLength;
 exports.checkSpecialCharacters=checkSpecialCharacters;
 exports.validateString=validateString;

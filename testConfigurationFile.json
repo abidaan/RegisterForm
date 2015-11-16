@@ -1,0 +1,5 @@
+{
+    "testFeature": true,
+    "emailFeature": true,
+    "thisShouldBeUnavailable": false
+}

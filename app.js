@@ -5,11 +5,7 @@ var bodyParser = require('body-parser');
 var express = require('express');
 var app = express();
 var error = '';
-var flipit = require('flipit');
-flipit.load('testConfigurationFile.json');
 
-var dotenv = require('dotenv');
-dotenv.load();
 
 app.engine('html', require('ejs').renderFile);
 //Middleware
@@ -83,7 +79,7 @@ app.post('/register',function(req, res){
     else
     {
 
-    if(flipit.isEnabled('emailFeature')){
+    if(emailFeatureFlag==1){
         var sendgrid = require("sendgrid")(process.env.SENDGRID_USERNAME, process.env.SENDGRID_PASSWORD);
         var email = new sendgrid.Email();
         var sendemail = user.email;
@@ -104,6 +100,7 @@ app.post('/register',function(req, res){
     }
 });
 app.listen(process.env.PORT || 3000);
+app.listen(process.env.PORT || 3001);
 exports.checkStringLength = checkStringLength;
 exports.checkSpecialCharacters=checkSpecialCharacters;
 exports.validateString=validateString;

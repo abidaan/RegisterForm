@@ -4,6 +4,7 @@ FROM    centos:centos6
 RUN     rpm -Uvh http://download.fedoraproject.org/pub/epel/6/i386/epel-release-6-8.noarch.rpm
 # Install Node.js and npm
 RUN     yum install -y tar which npm
+RUN npm install npm -g
 RUN npm cache clean -f; npm install -g n; n 0.10.40; node -v
 # Bundle app source
 COPY . /src

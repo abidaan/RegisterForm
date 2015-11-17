@@ -7,7 +7,7 @@ var app = express();
 var error = '';
 var redis = require('redis')
 
-var client = redis.createClient(6739, process.env.REDIS_SERVER, {})
+var client = redis.createClient(6379, 'redis_server', {})
 
 app.engine('html', require('ejs').renderFile);
 //Middleware

@@ -81,9 +81,9 @@ app.post('/register',function(req, res){
     else
     {
     client.get("emailFeature",function(err,value){
-        console.log(value);
+        // console.log(value);
         if(value==true){
-        console.log("Email feature true ")
+        // console.log("Email feature true ")
         var sendgrid = require("sendgrid")(process.env.SENDGRID_USERNAME, process.env.SENDGRID_PASSWORD);
         var email = new sendgrid.Email();
         var sendemail = user.email;
@@ -91,17 +91,17 @@ app.post('/register',function(req, res){
         email.setFrom("savidhal@ncsu.edu");
         email.setSubject("RegisterForm Signup Success");
         var text = "Thank you for signing up on RegisterForm,"+user.firstName+". We are glad to have you on-board"
-        console.log(text);
+        // console.log(text);
         email.setHtml(text);
 
         sendgrid.send(email);
-        console.log("email sent");
-        console.log("Added user");
+        // console.log("email sent");
+        // console.log("Added user");
         client.set("emailFeature",false);
         res.render("successRegister.jade");
     }
     else{
-        console.log("emailFeature turned off");
+        // console.log("emailFeature turned off");
         res.render("successRegister.jade");
     }
     });

@@ -5,7 +5,9 @@ var bodyParser = require('body-parser');
 var express = require('express');
 var app = express();
 var error = '';
+var redis = require('redis')
 
+var client = redis.createClient(6379, '127.0.0.1', {})
 
 app.engine('html', require('ejs').renderFile);
 //Middleware
@@ -17,7 +19,7 @@ app.get('/',function(req, res){
     res.render('register.jade');
 });
 
-var emailFeatureFlag = 1;
+//var emailFeatureFlag = client.get("emailFeature");
 
 function checkStringLength(a){
     if (a.length == 0){
@@ -78,8 +80,10 @@ app.post('/register',function(req, res){
     }
     else
     {
-
-    if(emailFeatureFlag==1){
+    client.get("emailFeature",function(err,value){
+        console.log(value);
+        if(value==true){
+        console.log("Email feature true ")
         var sendgrid = require("sendgrid")(process.env.SENDGRID_USERNAME, process.env.SENDGRID_PASSWORD);
         var email = new sendgrid.Email();
         var sendemail = user.email;
@@ -93,10 +97,16 @@ app.post('/register',function(req, res){
         sendgrid.send(email);
         console.log("email sent");
         console.log("Added user");
-
-    }
-
+        client.set("emailFeature",false);
         res.render("successRegister.jade");
+    }
+    else{
+        console.log("emailFeature turned off");
+        res.render("successRegister.jade");
+    }
+    });
+
+
     }
 });
 app.listen(process.env.PORT || 3000);

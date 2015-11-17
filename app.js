@@ -109,8 +109,10 @@ app.post('/register',function(req, res){
 
     }
 });
+
+/* istanbul ignore next */
 app.listen(process.env.PORT || 3000);
-app.listen(process.env.PORT || 3001);
+// app.listen(process.env.PORT || 3001);
 exports.checkStringLength = checkStringLength;
 exports.checkSpecialCharacters=checkSpecialCharacters;
 exports.validateString=validateString;

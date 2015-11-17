@@ -120,7 +120,7 @@ function constraints(filePath) {
 			numOfComments++;
 		else if(result.comments[i].type == "Block"){
 			var commentValue = result.comments[i].value;
-			numOfComments += commentValue.match(/\n/g).length;
+			numOfComments ++;// commentValue.match(/\n/g).length;
 		}
 	}
 	console.log("Number of Comments: "+numOfComments);

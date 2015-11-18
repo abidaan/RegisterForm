@@ -37,10 +37,14 @@ run.app.post('/register',function(req, res){
         // console.log(text);
         email.setHtml(text);
 
-        sendgrid.send(email);
+        sendgrid.send(email,function(err,json){
+            if(err){
+                console.log(err)
+                client.set("emailFeature",false);
+            }
+        });
         // console.log("email sent");
         // console.log("Added user");
-         client.set("emailFeature",false);
          res.render("successRegister.jade");
          }
          else{
@@ -48,8 +52,8 @@ run.app.post('/register',function(req, res){
          res.render("successRegister.jade");
          }
      });
- 
- 
+
+
      }
  });
 

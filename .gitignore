@@ -1,5 +1,6 @@
 node_modules/*
 Proxy/node_modules/*
+Monitor/node_modules/*
 test.js
 subject.js
 coverage/*

@@ -10,6 +10,7 @@ var client = redis.createClient(6379, "redis_server", {})
 client.flushall()
 client.set("key", "value");
 client.set("emailFeature", true);
+client.set("canaryDead", false);
 client.get("emailFeature", function(err,value){ console.log(value)});
 var list = {};
 var host;
@@ -27,8 +28,16 @@ client.lpush("instances",instance2);
 
 var server  = http.createServer(function(req, res)
 	{
-		client.rpoplpush("instances","instances",function(err,TARGET){
-	  		proxy.web( req, res, {target: TARGET } );
+		client.get("canaryDead",function(err,value){
+			if(value == "true"){
+				client.lrem("instances",instance2);
+			}
+			else{
+			client.rpoplpush("instances","instances",function(err,TARGET){
+	  			proxy.web( req, res, {target: TARGET } );
+			});
+			}
 		});
+
 	});
 server.listen(8000);

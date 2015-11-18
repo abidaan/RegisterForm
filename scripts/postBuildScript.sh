@@ -30,4 +30,7 @@ then
    echo "docker image push failed"
    exit 2
 fi
+echo "Deploying to Production"
 ssh root@prod "bash -s" < ./scripts/deployScript.sh
+echo "Deploying to canary"
+ssh root@staging "bash -s" < ./scripts/deployScript.sh

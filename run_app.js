@@ -1,6 +1,7 @@
 var run = require('./app.js');
 var redis = require('redis')
 var client = redis.createClient(6379, 'redis_server', {})
+require('newrelic')
 run.app.post('/register',function(req, res){
     var user = {
         firstName: req.body.firstname,

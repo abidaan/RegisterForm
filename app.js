@@ -63,3 +63,5 @@ exports.validateString=validateString;
 exports.checkAge=checkAge;
 exports.validatePassword=validatePassword;
 exports.app=app;
+exports.error=error;
+

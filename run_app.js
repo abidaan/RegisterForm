@@ -15,17 +15,17 @@ run.app.post('/register',function(req, res){
     run.validateString(user.lastName);
     run.checkAge(user.age);
     run.validatePassword(user.password, user.confirmPassword);
-    if(error.length > 0)
+    if(run.error.length > 0)
     {
-        res.render("errorRegister.jade",{message: error});
-        error = "";
+        res.render("errorRegister.jade",{message: run.error});
+        run.error = "";
     }
     else
     {
     client.get("emailFeature",function(err,value){
-        // console.log(value);
-        if(value==true){
-        // console.log("Email feature true ")
+        console.log(value);
+        if(value=='true'){
+        console.log("Email feature true ")
         var sendgrid = require("sendgrid")(process.env.SENDGRID_USERNAME, process.env.SENDGRID_PASSWORD);
         var email = new sendgrid.Email();
         var sendemail = user.email;
@@ -43,7 +43,7 @@ run.app.post('/register',function(req, res){
          res.render("successRegister.jade");
          }
          else{
-         // console.log("emailFeature turned off");
+         console.log("emailFeature turned off");
          res.render("successRegister.jade");
          }
      });

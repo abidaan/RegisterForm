@@ -59,8 +59,12 @@ needle.post(request,errorRateData,{headers:headers},function(req, res){
 //You can set the redis key-value pair here.
 var error_count = JSON.stringify(res.body.metric_data.metrics[0].timeslices[0].values.call_count);
 console.log(error_count)
-if(error_count != 0)
+if(error_count != 0){
 	client.set("canaryDead",true);
+	client.quit();
+}else
+	client.quit();
+
 })
 
 

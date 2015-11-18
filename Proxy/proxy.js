@@ -7,6 +7,7 @@ var app = express()
 
 // REDIS
 var client = redis.createClient(6379, "redis_server", {})
+client.flushall()
 client.set("key", "value");
 client.set("emailFeature", true);
 client.get("emailFeature", function(err,value){ console.log(value)});

@@ -3,7 +3,7 @@ var needle = require('needle')
 var redis = require('redis')
 
 //Create Redis client
-// var client = redis.createClient(6379, 'redis_server', {})
+var client = redis.createClient(6379, 'redis_server', {})
 
 //Define the New Relic API Key and the App ID of the application(s) that we wish to monitor
 var apiKey = process.env.NewRelicAPIKey;
@@ -42,13 +42,8 @@ var avgResponseTimeData = {
 needle.post(request,avgResponseTimeData,{headers:headers},function(req, res){
 	//You can set the redis key-value pair here or in the second metric (see below)
 	var avg_response_time = JSON.stringify(res.body.metric_data.metrics[0].timeslices[0].values.average_call_time)
-	//console.log(avg_response_time)
+	console.log(avg_response_time)
 })
-
-
-// var httpDispatcherCallCount
-// var errorsAllErrorCount
-// var otherTransactionDataCallCount
 
 //The data to be sent to New Relic to retrieve the application throughput values of the application(s) that is(are) being monitored
 //HttpDispatcher
@@ -98,15 +93,11 @@ needle.post(request,httpDispatcherData,{headers:headers},function(req, res){
 			if(isNaN(error_rate))
 				error_rate = 0
 			console.log(httpDispatcherCallCount+" "+errorsAllErrorCount+" "+otherTransactionDataCallCount+" "+error_rate)
+			if(error_rate != 0){
+				client.set("canaryDead",true);
+				client.quit();
+			}else
+				client.quit();
 		})
 	})
 })
-
-//You can set the redis key-value pair here.
-//var error_count = JSON.stringify(res.body.metric_data.metrics[0].timeslices[0].values.call_count);
-// console.log(error_count)
-// if(error_count != 0)
-// 	client.set("canaryDead",true);
-//console.log(startDateTime+" "+endDateTime)
-//})
-console.log(startDateTime+ " "+ endDateTime)

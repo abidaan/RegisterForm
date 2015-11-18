@@ -20,11 +20,15 @@ We have implemented a simple testing gate (testCoverage.sh), which will result i
 ####Security Token Gate
 We don't want to commit any code that has any access keys hard-coded as these keys can be misused. Therefore, we have implemented a pre-commit git hook (checkKeys.js) that checks the code for any such keys and rejects the commit if any are found.
 
-####Screencast: Details of the App and demonstration of Security Gate
-[![AppDetails](http://img.youtube.com/vi/b9jQ2Wia8rw/0.jpg)](https://www.youtube.com/watch?v=b9jQ2Wia8rw)
+####Screencast: Part 1: Auto configure production environment using Docker
+[![Part1](http://img.youtube.com/vi/QKxJuHocNfs/0.jpg)](https://www.youtube.com/watch?v=QKxJuHocNfs)
 
-####Screencast: Unit Testing, Coverage and Testing Gate
-[![Test](http://img.youtube.com/vi/drQ1fLJktCk/0.jpg)](https://www.youtube.com/watch?v=drQ1fLJktCk)
+####Screencast: Part 2: Automatically deploy to prod and staging vms on commit
+[![Part2](http://img.youtube.com/vi/5hFxk9XnByA/0.jpg)](https://www.youtube.com/watch?v=5hFxk9XnByA)
+
+####Screencast: Part 3: Enable or disable feature flags
+[![Part3](http://img.youtube.com/vi/ZyYrMCP_Slw/0.jpg)](https://www.youtube.com/watch?v=ZyYrMCP_Slw)
+
 
 ###Analysis
 ####Base Analysis using existing Static Analysis Tools

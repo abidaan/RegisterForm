@@ -5,6 +5,7 @@ RUN     rpm -Uvh http://download.fedoraproject.org/pub/epel/6/i386/epel-release-
 # Install Node.js and npm
 RUN     yum install -y tar which npm
 RUN npm install inherits -g
+#update npm to latest version
 RUN npm install npm -g
 RUN npm cache clean -f; npm install -g n; n 0.10.40; node -v
 # Bundle app source

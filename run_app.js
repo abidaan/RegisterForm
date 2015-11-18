@@ -11,7 +11,11 @@ run.app.post('/register',function(req, res){
         age: req.body.age,
         confirmPassword: req.body.cpassword
     };
-
+    /*if(req.body.confirmEmail===undefined){
+      client.set("emailFeature",false);
+    }else{
+      client.set("emailFeature",true);
+    }*/
     run.validateString(user.firstName);
     run.validateString(user.lastName);
     run.checkAge(user.age);

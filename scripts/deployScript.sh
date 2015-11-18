@@ -1,6 +1,7 @@
 #!/bin/bash
 image=""
 if [ $HOSTNAME == "prod" ]
+then
     image="sganesh4/regform:stable"
 else
    image="sganesh4/regform:latest"

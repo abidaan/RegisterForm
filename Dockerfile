@@ -13,4 +13,4 @@ COPY . /src
 RUN cd /src; export LINK=g++; npm install
 
 EXPOSE  3000
-CMD ["node", "/src/app.js"]
+CMD ["node", "/src/run_app.js"]

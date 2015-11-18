@@ -32,7 +32,7 @@ var endDateTime = "\""+currentdate.getFullYear()+"-"+(currentdate.getMonth()+1)+
 var avgResponseTimeData = {
 	'names':'HttpDispatcher',
 	"values":'average_call_time',
-	"from":'2015-11-17T00:00:00+00:00',
+	"from":startDateTime,
 	"to":endDateTime,
 	"summarize":'true'
 }
@@ -48,7 +48,7 @@ needle.post(request,avgResponseTimeData,{headers:headers},function(req, res){
 var errorRateData = {
 	'names':'HttpDispatcher',
 	"values":'call_count',
-	"from":"2015-11-17T00:00:00+00:00",
+	"from":startDateTime,
 	"to":endDateTime,
 	"summarize":'true'
 }

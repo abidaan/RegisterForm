@@ -9,6 +9,6 @@ fi
 docker pull $image
 docker stop webform
 docker rm webform
-docker rmi currnet
+docker rmi current
 docker tag $image current
 docker run -p 5001:3000 -d --add-host="redis_server:104.236.26.43" --name webform current

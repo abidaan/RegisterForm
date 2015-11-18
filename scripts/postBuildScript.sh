@@ -30,4 +30,4 @@ then
    echo "docker image push failed"
    exit 2
 fi
-ssh root@prod "bash -s" < deployScript.sh
+ssh root@prod "bash -s" < ./scripts/deployScript.sh

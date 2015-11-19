@@ -19,8 +19,8 @@ var host;
 var options = {}
 var proxy   = httpProxy.createProxyServer(options);
 //Server instances
-//var instance1 = 'http://prod:5001';
-var instance1 = 'http://:5001';
+var instance1 = 'http://prod:5001';
+//var instance1 = 'http://:5001';
 //var instance2  = 'http://staging:5001';
 var instance2  = 'http://staging:5001';
 

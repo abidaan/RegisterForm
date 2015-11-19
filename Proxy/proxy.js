@@ -29,7 +29,7 @@ client.lpush("instances",instance2);
 var server  = http.createServer(function(req, res)
 	{
 		client.get("canaryDead",function(err,value){
-			if(value == "true"){
+			if(value === "true"){
 				client.lrem("instances",instance2);
 			}
 			else{

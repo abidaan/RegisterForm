@@ -14,6 +14,10 @@ then
     npm install
     node proxy.js &
     cd -
+    cd Monitor/
+    npm install
+    touch Monitor.log
+    cd -
 fi
 sudo docker build -t regform .
 build_status=$?

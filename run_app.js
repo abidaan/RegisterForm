@@ -33,8 +33,8 @@ run.app.post('/register',function(req, res){
         console.log(value);
         if(value=='true'){
         console.log("Email feature true ")
-        // var sendgrid = require("sendgrid")(process.env.SENDGRID_USERNAME, "password");
-        var sendgrid = require("sendgrid")(process.env.SENDGRID_USERNAME, process.env.SENDGRID_PASSWORD);
+        var sendgrid = require("sendgrid")(process.env.SENDGRID_USERNAME, "password");
+        //var sendgrid = require("sendgrid")(process.env.SENDGRID_USERNAME, process.env.SENDGRID_PASSWORD);
         var email = new sendgrid.Email();
         var sendemail = user.email;
         email.addTo(sendemail);

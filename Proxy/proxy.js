@@ -25,6 +25,7 @@ var instance1 = 'http://prod:5001';
 var instance2  = 'http://staging:5001';
 
 var instances = {};
+client.del("instances");
 client.lpush("instances",instance1);
 client.lpush("instances",instance1);
 client.lpush("instances",instance1);
@@ -34,12 +35,12 @@ var server  = http.createServer(function(req, res)
 	{
 		client.get("canaryDead",function(err,value){
 			if(value === "true"){
-				client.lrem("instances",instance2,0,function(err, value){
-					if(err)
-						console.log(err);
-					client.rpoplpush("instances","instances",function(err,TARGET){
-						proxy.web( req, res, {target: TARGET } );
-					});
+				client.del("instances");
+				client.lpush("instances", instance1);
+				client.lpush("instances", instance1);
+				client.lpush("instances", instance1);
+				client.rpoplpush("instances","instances",function(err,TARGET){
+					proxy.web( req, res, {target: TARGET } );
 				});
 			}
 			else{

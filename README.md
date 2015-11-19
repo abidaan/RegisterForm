@@ -39,7 +39,6 @@ The second part is monitoring staging. We use Monitor/monitoring.js file to moni
 [![Part4](http://img.youtube.com/vi/qMWjO1-2dac/0.jpg)](https://www.youtube.com/watch?v=qMWjO1-2dac)
 
 ####Notes:
-For our demonstration we made the following configurations <br />
 1. /etc/hosts on machine running proxy server had Digital Ocean droplet IPs with names 'prod' & staging
 2. Email credentials were passed to docker image being run using a local file on the 'prod' & 'staging' machines
 3. Redis server IP was passed to docker image while running the app

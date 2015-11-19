@@ -42,6 +42,8 @@ var avgResponseTimeData = {
 needle.post(request,avgResponseTimeData,{headers:headers},function(req, res){
 	//You can set the redis key-value pair here or in the second metric (see below)
 	var avg_response_time = JSON.stringify(res.body.metric_data.metrics[0].timeslices[0].values.average_call_time)
+	if(avg_response_time > 500)
+		client.set("canaryDead",true);
 	console.log("Average Response Time: "+avg_response_time)
 })
 
@@ -94,7 +96,7 @@ needle.post(request,httpDispatcherData,{headers:headers},function(req, res){
 				otherTransactionDataCallCount = 0
 			error_rate = (parseInt(errorsAllErrorCount)/(parseInt(httpDispatcherCallCount) + parseInt(otherTransactionDataCallCount)))*100
 			console.log("Error Rate: "+error_rate)
-			if(error_rate != 0){
+			if(error_rate > 30){
 				client.set("canaryDead",true);
 				client.quit();
 			}else

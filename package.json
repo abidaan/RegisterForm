@@ -32,7 +32,8 @@
     "sendgrid": "^1.6.0",
     "sloc": "^0.1.9",
     "underscore": "^1.7.0",
-    "newrelic":"*"
+    "newrelic":"*",
+    "sleep":"*"
   },
   "engines": {
     "node": "0.12.*"

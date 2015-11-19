@@ -37,6 +37,9 @@ var server  = http.createServer(function(req, res)
 				client.lrem("instances",instance2,0,function(err, value){
 					if(err)
 						console.log(err);
+					client.rpoplpush("instances","instances",function(err,TARGET){
+						proxy.web( req, res, {target: TARGET } );
+					});
 				});
 			}
 			else{

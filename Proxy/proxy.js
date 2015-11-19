@@ -34,13 +34,13 @@ client.lpush("instances",instance2);
 var server  = http.createServer(function(req, res)
 	{
 		client.get("canaryDead",function(err,value){
-			if(value === true){
-				client.lrem("instances",instance2,0,function(err, value){
-					if(err)
-						console.log(err);
-					client.rpoplpush("instances","instances",function(err,TARGET){
-						proxy.web( req, res, {target: TARGET } );
-					});
+			if(value === "true"){
+				client.del("instances");
+				client.lpush("instances", instance1);
+				client.lpush("instances", instance1);
+				client.lpush("instances", instance1);
+				client.rpoplpush("instances","instances",function(err,TARGET){
+					proxy.web( req, res, {target: TARGET } );
 				});
 			}
 			else{

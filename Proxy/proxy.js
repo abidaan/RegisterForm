@@ -7,6 +7,7 @@ var app = express()
 
 // REDIS
 var client = redis.createClient(6379, "redis_server", {})
+
 client.flushall()
 client.set("key", "value");
 client.set("emailFeature", true);
@@ -18,8 +19,11 @@ var host;
 var options = {}
 var proxy   = httpProxy.createProxyServer(options);
 //Server instances
-var instance1 = 'http://prod:5001';
+//var instance1 = 'http://prod:5001';
+var instance1 = 'http://:5001';
+//var instance2  = 'http://staging:5001';
 var instance2  = 'http://staging:5001';
+
 var instances = {};
 client.lpush("instances",instance1);
 client.lpush("instances",instance1);
@@ -30,7 +34,10 @@ var server  = http.createServer(function(req, res)
 	{
 		client.get("canaryDead",function(err,value){
 			if(value === "true"){
-				client.lrem("instances",instance2);
+				client.lrem("instances",instance2,0,function(err, value){
+					if(err)
+						console.log(err);
+				});
 			}
 			else{
 			client.rpoplpush("instances","instances",function(err,TARGET){

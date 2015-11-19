@@ -19,8 +19,8 @@ var host;
 var options = {}
 var proxy   = httpProxy.createProxyServer(options);
 //Server instances
-//var instance1 = 'http://prod:5001';
-var instance1 = 'http://:5001';
+var instance1 = 'http://prod:5001';
+//var instance1 = 'http://:5001';
 //var instance2  = 'http://staging:5001';
 var instance2  = 'http://staging:5001';
 
@@ -34,8 +34,15 @@ client.lpush("instances",instance2);
 var server  = http.createServer(function(req, res)
 	{
 		client.get("canaryDead",function(err,value){
-			if(value === "true")
-				client.lrem("instances",instance2,0)
+			if(value === true){
+				client.lrem("instances",instance2,0,function(err, value){
+					if(err)
+						console.log(err);
+					client.rpoplpush("instances","instances",function(err,TARGET){
+						proxy.web( req, res, {target: TARGET } );
+					});
+				});
+			}
 			else{
 			client.rpoplpush("instances","instances",function(err,TARGET){
 	  			proxy.web( req, res, {target: TARGET } );

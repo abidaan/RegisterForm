@@ -34,6 +34,7 @@ then
    echo "docker image push failed"
    exit 2
 fi
+#deploy docker container on prod and staging
 echo "Deploying to Production"
 ssh root@prod "bash -s" < ./scripts/deployScript.sh $REDIS_SERVER
 echo "Deploying to canary"

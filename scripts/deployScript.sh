@@ -21,4 +21,4 @@ then
 fi
 docker images -q --filter "dangling=true" |xargs docker rmi
 docker tag $image current
-docker run -p 5001:3000 -d --add-host="redis_server:104.236.26.43" --env-file ~/email_cred --name webform current
+docker run -p 5001:3000 -d --add-host="redis_server:$1" --env-file ~/email_cred --name webform current

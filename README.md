@@ -1,45 +1,44 @@
 # RegisterForm
-Repo for CSC-591 Milestone 2.
+Repo for CSC-591 Milestone 3.
 
 ###Group Members
 1. Abidaan Nagawkar (ajnagawk)
 2. Shivaji Vidhale (savidhal)
 3. Sushil Ganesh (sganesh4)
 
-###Test
-####Unit Testing
-The Unit Test is described in the file 'unitTest.js'. The Jenkins Server is configured to automatically run this test each time new code is committed to the repository. The success or failure of the build dependends on whether the unit test passes or fails.
-
-####Advanced Testing Technique and Coverage Report
-We have implemented Constraint-Based Test Generation in order to improve testing coverage (main.js). With this technique, constraints on the argument list of various methods are taken into consideration and test cases are automatically generated. These test cases improve testing coverage as various (correct and incorrect) permutations of argument values are passed to individual methods in the code.
-At the end of testing, a coverage report is displayed which shows statistics such as Branch Coverage, Statement Coverage, etc.
-
-####Testing Gate
-We have implemented a simple testing gate (testCoverage.sh), which will result in build failure if branch coverage is less than 75%.
-
-####Security Token Gate
-We don't want to commit any code that has any access keys hard-coded as these keys can be misused. Therefore, we have implemented a pre-commit git hook (checkKeys.js) that checks the code for any such keys and rejects the commit if any are found.
+###Automatic Configuration of Production Envrionment using Docker
+We have used Docker in order to configure the production envrionment for our application automatically. Basically, what we have done is, as soon as any changes are pushed to the repository, the project is automatically build on jenkins (Milestone 1). Once this is successful, the project is tested and the various analyses are conducted (Milestone 2). Only when this is successful, we create a container (on the build server itself) using our custom Dockerfile. This Dockerfile contains the configuration parameters for our application. Once the container is successfully created, we push this container to DockerHub. All these steps are performed automatically by a script (postBuildScript.sh).
 
 ####Screencast: Part 1: Auto configure production environment using Docker
 [![Part1](http://img.youtube.com/vi/QKxJuHocNfs/0.jpg)](https://www.youtube.com/watch?v=QKxJuHocNfs)
 
+###Automatic Deployment
+Once the containers are created and pushed to the DockerHub, we ssh into production (prod) and canary (staging) virtual machines (which we have provisioned using DigitalOcean). We perform a docker pull in these servers. All this is done automatically using a script (deployScript.sh). Thus, we successfully deploy two versions of our app, one on prod and one on staging.
+
 ####Screencast: Part 2: Automatically deploy to prod and staging vms on commit
 [![Part2](http://img.youtube.com/vi/5hFxk9XnByA/0.jpg)](https://www.youtube.com/watch?v=5hFxk9XnByA)
 
+###Feature Flags
+Feature that we are demonstrating is the email feature in which we send an email to the user when he/she successfully signs up. We are using sendgrid to implement this service. The feature gets switched off when there is some error that occurs while trying to send an email. So, if there is any bug, it will be caught and as a consequence, the feature flag is set to false. And this feature will no longer be implemented.
+
 ####Screencast: Part 3: Enable or disable feature flags
-[![Part3](http://img.youtube.com/vi/ZyYrMCP_Slw/0.jpg)](https://www.youtube.com/watch?v=ZyYrMCP_Slw)
+[![Part3](http://img.youtube.com/vi/awFn4-5rE98/0.jpg)](https://www.youtube.com/watch?v=awFn4-5rE98)
 
+###Metrics and Alerts
+We have used New Relic in order to monitor our application. The first step here is to sign up for an account with New Relic. Once this is complete, we can start monitoring our applications. We have to install a New Relic client (newrelic.js) in the root folder of the app we wish to monitor. We also have to add the following line at the top of our application code: `require('newrelic')`   
+Once this is done, our application starts sending metrics to New Relic. Now, we need to configure an alert policy with New Relic for our applications. We have chosen the alert policy as the error rate of the application in the last five minutes and we have set the value to 5%. Basically, if the error rate of the applciation exceeds 5% even once in the last five minutes, then an alert will be raised. We also have to configure an alert channel. The alert channel defines how the alert is sent and to whom. We have set the alert channel to send an email to the concerned persons in case of an alert. We have set certain environment variables for APIKey, APPID, LicenseKey which are fairly straightforward to set up. Please refer to https://github.ncsu.edu/ajoshi5/DevOps-TechTalks for more details on how to set up New Relic.
 
-###Analysis
-####Base Analysis using existing Static Analysis Tools
-ESLint has been used in order to perform a static analysis of the application (scripts/statisAnalysis.sh). This script basically runs ESLint on our application code and displays the results on the console as warnings or errors. The build fails if ESLint finds any errors but in our configuration, warnings do not fail the build. 
+####Screencast: Part 4: Metrics and Alerts (Monitoring)
+[![Part4](http://img.youtube.com/vi/gopkPGvXCSs/0.jpg)](https://www.youtube.com/watch?v=gopkPGvXCSs)
 
-####Extended Analysis
-We have implemented a simple extended analysis (main.js, scripts/extendedAnalysis.sh) which displays the ratio of comments to actual code. In the main.js file, we have modified the options that we pass to esprima to include comments as well. We have written simple code that counts the number of comments (single-line) or the number of lines of comments (multi-line). Our extendedAnalysis.sh script basically counts the total number of lines of code and subtracts the number of comments to display the ratio of comments to actual code.
+###Canary Releasing
+In this part, we are running a proxy server (Proxy/proxy.js) which has three instances of prod(stable) and one instance of staging(canary). It makes use of a global redis server in which this instance list is stored. Whenever a request is made to our application (on the IP address and port exposed by proxy.js), the proxy script automatically routes the request to either prod or staging. 
+The second part is monitoring staging. We use Monitor/monitoring.js file to monitor staging every two minutes (cron task). If, during this monitoring, we find that certain parameters (for example: average response time as used in the screencast) exceed custom threshold values, then we update the global redis server to contain only prod instances in the instance list. As a result, any further requests made to our application are routed only to prod by our proxy server. The canary server (staging) does not get any further requests.
 
-####Analysis Gate
-In our base analysis, we used ESLint which as per the configuration file reports errors, ad if any errors exist, the build fails. Like when the eslintrc file could not recognize Mocha keywords, it threw errors and the build failed. By making changes to the '.eslintrc' file as desired, builds can be accepted successfully. Therefore, we can configure ESLint to cause the build to fail if certain conditions are not satisfied.
+####Screencast: Part 5: Canary Release
+[![Part4](http://img.youtube.com/vi/qMWjO1-2dac/0.jpg)](https://www.youtube.com/watch?v=qMWjO1-2dac)
 
-####Screencast: Base Analysis, Extended Analysis and Analysis Gate
-[![Analysis](http://img.youtube.com/vi/MMOrcloQWig/0.jpg)](https://www.youtube.com/watch?v=MMOrcloQWig) 
-
+####Notes:
+1. /etc/hosts on machine running proxy server had Digital Ocean droplet IPs with names 'prod' & staging
+2. Email credentials were passed to docker image being run using a local file on the 'prod' & 'staging' machines
+3. Redis server IP was passed to docker image while running the app

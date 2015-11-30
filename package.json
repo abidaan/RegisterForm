@@ -33,7 +33,8 @@
     "sloc": "^0.1.9",
     "underscore": "^1.7.0",
     "newrelic":"*",
-    "sleep":"*"
+    "sleep":"*",
+    "twilio": "^2.0.0"
   },
   "engines": {
     "node": "0.12.*"

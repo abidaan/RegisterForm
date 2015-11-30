@@ -50,10 +50,10 @@ needle.post(request,avgResponseTimeData,{headers:headers},function(req, res){
 
 // Create a new REST API client to make authenticated requests against the
 // twilio back end
-		var client = new twilio.RestClient('TWILIO_ACCOUNT_SID', 'TWILIO_AUTH_TOKEN');
+		var twilio_client = new twilio.RestClient('TWILIO_ACCOUNT_SID', 'TWILIO_AUTH_TOKEN');
 // Pass in parameters to the REST API using an object literal notation. The
 // REST client will handle authentication and response serialzation for you.
-		client.sms.messages.create({
+		twilio_client.sms.messages.create({
 			to:'+19199855965',
 			from:'+12813774461',
 			body:'Average response tis more than expected'

@@ -1,3 +1,4 @@
+*.log
 node_modules/*
 Proxy/node_modules/*
 Monitor/node_modules/*

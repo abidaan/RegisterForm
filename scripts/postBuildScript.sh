@@ -35,6 +35,6 @@ then
    exit 2
 fi
 echo "Deploying to Production"
-ssh root@prod "bash -s" < ./scripts/deployScript.sh
+ssh root@prod "bash -s" < ./scripts/deployScript.sh $REDIS_SERVER
 echo "Deploying to canary"
-ssh root@staging "bash -s" < ./scripts/deployScript.sh
+ssh root@staging "bash -s" < ./scripts/deployScript.sh $REDIS_SERVER

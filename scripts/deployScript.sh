@@ -15,10 +15,14 @@ then
     docker rm webform
 fi
 image_count=`docker images|grep current|wc -l`
+docker images
 if [ $image_count -ne 0 ]
 then
+    echo $image_count
     docker rmi current
 fi
 docker images -q --filter "dangling=true" |xargs docker rmi
 docker tag $image current
+docker images
+echo `hostname`
 docker run -p 5001:3000 -d --add-host="redis_server:$1" --env-file ~/email_cred --name webform current

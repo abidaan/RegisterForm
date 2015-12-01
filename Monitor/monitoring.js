@@ -11,6 +11,7 @@ var client = redis.createClient(6379, 'redis_server', {})
 var apiKey = process.env.NewRelicAPIKey;
 var appID = process.env.StagingAppID;
 
+var twilio_client = require('twilio')(process.env.TWILIO_ACCOUNT_SID, process.env.TWILIO_AUTH_TOKEN);
 //The header data to send to New Relic
 var headers = {
 	'X-Api-Key':apiKey
@@ -44,25 +45,26 @@ var avgResponseTimeData = {
 needle.post(request,avgResponseTimeData,{headers:headers},function(req, res){
 	//You can set the redis key-value pair here or in the second metric (see below)
 	var avg_response_time = JSON.stringify(res.body.metric_data.metrics[0].timeslices[0].values.average_call_time)
-	if(avg_response_time > 50){
+	if(avg_response_time > 30){
 		// Load the twilio module
 		var twilio = require('twilio');
-
+		console.log("Sending twilio sms");
 // Create a new REST API client to make authenticated requests against the
 // twilio back end
-		var twilio_client = new twilio.RestClient('TWILIO_ACCOUNT_SID', 'TWILIO_AUTH_TOKEN');
+
 // Pass in parameters to the REST API using an object literal notation. The
 // REST client will handle authentication and response serialzation for you.
-		twilio_client.sms.messages.create({
+		twilio_client.messages.create({
 			to:'+19199855965',
 			from:'+12813774461',
 			body:'Average response tis more than expected'
 		}, function(error, message) {
+			console.log( JSON.stringify(error, null, 4))
 			// The HTTP request to Twilio will run asynchronously. This callback
 			// function will be called when a response is received from Twilio
 			// The "error" variable will contain error information, if any.
 			// If the request was successful, this value will be "falsy"
-			if (!error) {
+		/*	if (!error) {
 				// The second argument to the callback will contain the information
 				// sent back by Twilio for the request. In this case, it is the
 				// information about the text messsage you just sent:
@@ -72,8 +74,9 @@ needle.post(request,avgResponseTimeData,{headers:headers},function(req, res){
 				console.log('Message sent on:');
 				console.log(message.dateCreated);
 			} else {
+				console.log(error);
 				console.log('Oops! There was an error.');
-			}
+			}*/
 		});
 	}
 		//client.set("canaryDead",true);

@@ -13,7 +13,7 @@ app.set('views', __dirname + '/views');
 app.use(bodyParser.urlencoded({extended: true}));
 
 app.get('/',function(req, res){
-    res.render('register.jade');
+    res.render('register.jade', {message: process.env.EXTERNAL_HOST});
 });
 
 //var emailFeatureFlag = client.get("emailFeature");

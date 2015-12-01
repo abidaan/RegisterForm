@@ -46,6 +46,26 @@ run.app.post('/register',function(req, res){
 
         sendgrid.send(email,function(err,json){
             if(err){
+                //client.set("emailFeature",false);
+                // Load the twilio module
+                var twilio = require('twilio');
+                var twilio_client = new twilio.RestClient(process.env.TWILIO_ACCOUNT_SID, process.env.TWILIO_AUTH_TOKEN);
+                twilio_client.sms.messages.create({
+                    to:'+19199855965',
+                    from:'+12813774461',
+                    body:'Critical error in email feature. Reply "disable emailFeature" to set this feature off'
+                }, function(error, message) {
+                    if (!error) {
+                        console.log('Success! The SID for this SMS message is:');
+                        console.log(message.sid);
+
+                        console.log('Message sent on:');
+                        console.log(message.dateCreated);
+                    } else {
+                        console.log('Oops! There was an error.');
+                    }
+                });
+
                 //console.log(err)
                 client.set("emailFeature",false);
             }

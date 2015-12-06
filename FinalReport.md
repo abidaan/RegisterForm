@@ -12,9 +12,6 @@ This project consists of implementing the entire DevOps Continuous Integration P
 
 ![Pipeline](https://raw.githubusercontent.com/sganesh4/RegisterForm/master/ReportImages/Pipeline.png)
 
-####Screencast: DevOps Continuous Integration Pipeline
-[![Build](http://img.youtube.com/vi/px2otcyOfpA/0.jpg)](https://www.youtube.com/watch?v=px2otcyOfpA)
-
 ##Milestone 1: Build
 
 ####Description
@@ -68,3 +65,11 @@ We also have a New Relic client monitoring the status of our application constan
 
 ####Screencast - Part 5: Canary Release
 [![Part4](http://img.youtube.com/vi/qMWjO1-2dac/0.jpg)](https://www.youtube.com/watch?v=qMWjO1-2dac)
+
+##Milestone 4: Special Milestone - SMS Monkey
+
+####Description
+The special milestone is basically a feature that will allow authorized persons to set/unset feature flags as well as add additional servers using a single SMS. We have set up Twilio so that a SMS message is sent to the concerned persons whenever there are problems with the application. Authorized persons can then reply to that SMS and either set/unset a feature flag or spawn a new server instance. If the feature flag is set/unset, updates are made to the Global Redis Store accordingly and the email notification (in our case) is either turned on or off. On the other hand, if we find that the reponse time is unacceptable, we can send an SMS requesting a new server instance. A new Digital Ocean droplet is automatically created and the application is deployed on this new server. This SMS feature can prove to be extremely useful when developers/reliability officers are not at their workstations as it provides a mechanism to respond to problems instantaneously, which might be a requirement for critical applications.
+
+####Screencast: DevOps Continuous Integration Pipeline
+[![Build](http://img.youtube.com/vi/px2otcyOfpA/0.jpg)](https://www.youtube.com/watch?v=px2otcyOfpA)

@@ -20,7 +20,7 @@ function main() {
 	var args = process.argv.slice(2);
 
 	if (args.length == 0) {
-		args = ["app.js"];
+		args = ["app.js" ];
 	}
 	var filePath = args[0];
 

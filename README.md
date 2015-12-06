@@ -61,7 +61,7 @@ We also have a New Relic client monitoring the status of our application constan
 [![Part3](http://img.youtube.com/vi/awFn4-5rE98/0.jpg)](https://www.youtube.com/watch?v=awFn4-5rE98)
 
 ####Screencast - Part 4: Metrics and Alerts (Monitoring)
-[![Part4](http://img.youtube.com/vi/gopkPGvXCSs/0.jpg)](https://www.youtube.com/watch?v=gopkPGvXCSs
+[![Part4](http://img.youtube.com/vi/gopkPGvXCSs/0.jpg)](https://www.youtube.com/watch?v=gopkPGvXCSs)
 
 ####Screencast - Part 5: Canary Release
 [![Part4](http://img.youtube.com/vi/qMWjO1-2dac/0.jpg)](https://www.youtube.com/watch?v=qMWjO1-2dac)

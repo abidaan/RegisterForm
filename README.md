@@ -1,44 +1,75 @@
-# RegisterForm
-Repo for CSC-591 Milestone 3.
+#DevOps Continuous Integration Pipeline
 
-###Group Members
+##Members
 1. Abidaan Nagawkar (ajnagawk)
 2. Shivaji Vidhale (savidhal)
 3. Sushil Ganesh (sganesh4)
 
-###Automatic Configuration of Production Envrionment using Docker
-We have used Docker in order to configure the production envrionment for our application automatically. Basically, what we have done is, as soon as any changes are pushed to the repository, the project is automatically build on jenkins (Milestone 1). Once this is successful, the project is tested and the various analyses are conducted (Milestone 2). Only when this is successful, we create a container (on the build server itself) using our custom Dockerfile. This Dockerfile contains the configuration parameters for our application. Once the container is successfully created, we push this container to DockerHub. All these steps are performed automatically by a script (postBuildScript.sh).
 
-####Screencast: Part 1: Auto configure production environment using Docker
+
+##Overview
+This project consists of implementing the entire DevOps Continuous Integration Pipeline for a sample application. The application that we have built the pipeline for, is a simple registration web form which optionally sends an email notification on successful registration. We have set up the pipeline such that it automates the entire end-to-end process.
+
+![Pipeline](https://raw.githubusercontent.com/sganesh4/RegisterForm/master/ReportImages/Pipeline.png)
+
+##Milestone 1: Build
+
+####Description
+The build step of the pipeline is depicted below.
+
+![Build](https://raw.githubusercontent.com/sganesh4/RegisterForm/master/ReportImages/Build.png)
+
+A Digital Ocean droplet is used to host the Jenkins Server. We have configured Jenkins such that as soon as any changes are pushed to the project repository, Jenknins automatically pulls these changes from the repository and runs a build job. The build job is basically a build script which installs all the necessary dependencies for the project. The Jenkins server sends an email notification to all the developers on each successful or failed build. 
+
+####Screencast: Build
+[![Build](http://img.youtube.com/vi/Cnm4u82uVIc/0.jpg)](https://www.youtube.com/watch?v=Cnm4u82uVIc)
+
+##Milestone 2: Testing and Analysis
+
+####Desription
+We have configured Jenkins such that, it automatically runs tests on the project as an extension to the build step. Once Jenkins install all the necessary dependencies and completes all tasks listed in the build script, it runs several scripts that test various components of the project. We have used constraint based testing in order to generate test cases automatically. We have also used Mocha in order to run unit tests. The analysis phase consits of a base analysis using JSLint and an extendend analysis where we analyze the code to comment ratio. If any of these tests or analyses produce unsatisfactory results (values below thresholds defined by developers), then the build fails and a notification is sent to the developers. We have also set up git hooks to check for any secret keys/access tokens, etc. which may have been hard-coded. If any such values are found, the code will not get pushed to the repository.
+
+####Screencast: Details of the App and demonstration of Security Gate
+[![AppDetails](http://img.youtube.com/vi/b9jQ2Wia8rw/0.jpg)](https://www.youtube.com/watch?v=b9jQ2Wia8rw)
+
+####Screencast: Unit Testing, Coverage and Testing Gate
+[![Test](http://img.youtube.com/vi/drQ1fLJktCk/0.jpg)](https://www.youtube.com/watch?v=drQ1fLJktCk)
+
+####Screencast: Base Analysis, Extended Analysis and Analysis Gate
+[![Analysis](http://img.youtube.com/vi/MMOrcloQWig/0.jpg)](https://www.youtube.com/watch?v=MMOrcloQWig)
+
+##Milestone 3: Deployment
+
+####Description
+The deployment step of the pipeline is depicted below.
+![Deployment](https://raw.githubusercontent.com/sganesh4/RegisterForm/master/ReportImages/Deployment.png)
+
+This is the third step in the Continuous Integration Pipeline. Once Jenkins has built the project and all the tests and analyses are successful, Jenkins builds a Docker container. This container is basically an environment for the application. It contains all the dependencies and configurations that are required by the application to run. The purpose of building a container is portability. If we wish to change the physical server that the application is deployed on, we just have to move this container to the new server and our application will be deployed on that server. Once the container is built (using a Dockerfile), Jenkins pushes this container to Docker Hub. Docker Hub is a remote repository for docker containers.   
+Once the container is pushed to Docker Hub, Jenkins connects to the two application servers, one of which is labelled 'Production' and the other is labelled 'Staging'. Both these servers are Digital Ocean droplets. The production server hosts the stable version of the application whereas the staging server hosts the latest version (which might be unstable). Once Jenkins connects to each individual server, the respective Docker containers are pulled from Docker Hub. Now the application is running on both servers.   
+We have a Global Redis Store running on the same droplet as our Jenkins server. This store contains valuable information which will be used for request routing and feature flag setting/unsetting. We also have a Proxy server running on this same droplet. This is the endpoint which is visible to clients, that is, the server to which clients will make requests for our application.   
+The Proxy server queries the Redis Store whenever it receieves a client request. The Redis Store responds with the IP Address of the server to which this particular request should be routed (either Production or Staging based on a 3:1 ratio). The Proxy server then redirects the client request to that particular server.   
+The application running on both servers also query the Redis Store. This query is made for the purpose of understanding whether the email notification feature should be turned on. Based on the response sent by the Redis Store, the email notification feature is either set or unset.   
+We also have a New Relic client monitoring the status of our application constantly. If the agent finds that the application (Staging only) is not performing as required (for example if response time is higher than an acceptable threshold value), then it updates the Redis Store. This update basically informs the Redis Store that the Staging server is down. When the Proxy server queries the Redis Store for any new requests, the Redis Store will never return the IP Address of the Staging server, till the Staging Server is running again.
+
+####Screencast - Part 1: Auto configure production environment using Docker
 [![Part1](http://img.youtube.com/vi/QKxJuHocNfs/0.jpg)](https://www.youtube.com/watch?v=QKxJuHocNfs)
 
-###Automatic Deployment
-Once the containers are created and pushed to the DockerHub, we ssh into production (prod) and canary (staging) virtual machines (which we have provisioned using DigitalOcean). We perform a docker pull in these servers. All this is done automatically using a script (deployScript.sh). Thus, we successfully deploy two versions of our app, one on prod and one on staging.
-
-####Screencast: Part 2: Automatically deploy to prod and staging vms on commit
+####Screencast - Part 2: Automatically deploy to prod and staging vms on commit
 [![Part2](http://img.youtube.com/vi/5hFxk9XnByA/0.jpg)](https://www.youtube.com/watch?v=5hFxk9XnByA)
 
-###Feature Flags
-Feature that we are demonstrating is the email feature in which we send an email to the user when he/she successfully signs up. We are using sendgrid to implement this service. The feature gets switched off when there is some error that occurs while trying to send an email. So, if there is any bug, it will be caught and as a consequence, the feature flag is set to false. And this feature will no longer be implemented.
-
-####Screencast: Part 3: Enable or disable feature flags
+####Screencast - Part 3: Enable or disable feature flags
 [![Part3](http://img.youtube.com/vi/awFn4-5rE98/0.jpg)](https://www.youtube.com/watch?v=awFn4-5rE98)
 
-###Metrics and Alerts
-We have used New Relic in order to monitor our application. The first step here is to sign up for an account with New Relic. Once this is complete, we can start monitoring our applications. We have to install a New Relic client (newrelic.js) in the root folder of the app we wish to monitor. We also have to add the following line at the top of our application code: `require('newrelic')`   
-Once this is done, our application starts sending metrics to New Relic. Now, we need to configure an alert policy with New Relic for our applications. We have chosen the alert policy as the error rate of the application in the last five minutes and we have set the value to 5%. Basically, if the error rate of the applciation exceeds 5% even once in the last five minutes, then an alert will be raised. We also have to configure an alert channel. The alert channel defines how the alert is sent and to whom. We have set the alert channel to send an email to the concerned persons in case of an alert. We have set certain environment variables for APIKey, APPID, LicenseKey which are fairly straightforward to set up. Please refer to https://github.ncsu.edu/ajoshi5/DevOps-TechTalks for more details on how to set up New Relic.
+####Screencast - Part 4: Metrics and Alerts (Monitoring)
+[![Part4](http://img.youtube.com/vi/gopkPGvXCSs/0.jpg)](https://www.youtube.com/watch?v=gopkPGvXCSs
 
-####Screencast: Part 4: Metrics and Alerts (Monitoring)
-[![Part4](http://img.youtube.com/vi/gopkPGvXCSs/0.jpg)](https://www.youtube.com/watch?v=gopkPGvXCSs)
-
-###Canary Releasing
-In this part, we are running a proxy server (Proxy/proxy.js) which has three instances of prod(stable) and one instance of staging(canary). It makes use of a global redis server in which this instance list is stored. Whenever a request is made to our application (on the IP address and port exposed by proxy.js), the proxy script automatically routes the request to either prod or staging. 
-The second part is monitoring staging. We use Monitor/monitoring.js file to monitor staging every two minutes (cron task). If, during this monitoring, we find that certain parameters (for example: average response time as used in the screencast) exceed custom threshold values, then we update the global redis server to contain only prod instances in the instance list. As a result, any further requests made to our application are routed only to prod by our proxy server. The canary server (staging) does not get any further requests.
-
-####Screencast: Part 5: Canary Release
+####Screencast - Part 5: Canary Release
 [![Part4](http://img.youtube.com/vi/qMWjO1-2dac/0.jpg)](https://www.youtube.com/watch?v=qMWjO1-2dac)
 
-####Notes:
-1. /etc/hosts on machine running proxy server had Digital Ocean droplet IPs with names 'prod' & staging
-2. Email credentials were passed to docker image being run using a local file on the 'prod' & 'staging' machines
-3. Redis server IP was passed to docker image while running the app
+##Milestone 4: Special Milestone - SMS Monkey
+
+####Description
+The special milestone is basically a feature that will allow authorized persons to set/unset feature flags as well as add additional servers using a single SMS. We have set up Twilio so that a SMS message is sent to the concerned persons whenever there are problems with the application. Authorized persons can then reply to that SMS and either set/unset a feature flag or spawn a new server instance. If the feature flag is set/unset, updates are made to the Global Redis Store accordingly and the email notification (in our case) is either turned on or off. On the other hand, if we find that the reponse time is unacceptable, we can send an SMS requesting a new server instance. A new Digital Ocean droplet is automatically created and the application is deployed on this new server. This SMS feature can prove to be extremely useful when developers/reliability officers are not at their workstations as it provides a mechanism to respond to problems instantaneously, which might be a requirement for critical applications.
+
+####Screencast: DevOps Continuous Integration Pipeline
+[![Build](http://img.youtube.com/vi/px2otcyOfpA/0.jpg)](https://www.youtube.com/watch?v=px2otcyOfpA)

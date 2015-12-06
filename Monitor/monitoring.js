@@ -45,7 +45,7 @@ var avgResponseTimeData = {
 needle.post(request,avgResponseTimeData,{headers:headers},function(req, res){
 	//You can set the redis key-value pair here or in the second metric (see below)
 	var avg_response_time = JSON.stringify(res.body.metric_data.metrics[0].timeslices[0].values.average_call_time)
-	if(avg_response_time > 30){
+	if(avg_response_time > 3000){
 		// Load the twilio module
 		var twilio = require('twilio');
 		console.log("Sending twilio sms");
@@ -57,7 +57,7 @@ needle.post(request,avgResponseTimeData,{headers:headers},function(req, res){
 		twilio_client.messages.create({
 			to:'+19199855965',
 			from:'+12813774461',
-			body:'Average response tis more than expected'
+			body:'Average response time is more than expected. Scale up recommended. Reply "scale <new instance'+' name>" to spin up new instance '
 		}, function(error, message) {
 			console.log( JSON.stringify(error, null, 4))
 			// The HTTP request to Twilio will run asynchronously. This callback

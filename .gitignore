@@ -7,3 +7,4 @@ subject.js
 coverage/*
 .idea
 .DS_Store
+Twilio/digital_ocean_config.json
